@@ -1,34 +1,31 @@
-const readline = require('readline');
-const reader = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
 
 
 
 class Game {
-  constructor(stacks) {
+  constructor(stacks, reader, completionCallback) {
     this.stacks = stacks;
+    this.reader = reader;
+    this.completionCallback = completionCallback;
   }
 
-  run(completionCallback) {
-    this.promptMove(completionCallback);
+  run() {
+    this.promptMove();
   }
 
-  promptMove(completionCallback) {
-    console.log(this);
-    reader.question("Which stack do you want to take from?\n> ", (fromRes) => {
+  promptMove() {
+    console.log(this.stacks.toString());
+    this.reader.question("Which stack do you want to take from?\n> ", (fromRes) => {
       let fromStack = parseInt(fromRes);
-      reader.question("Which stack do you want to move to?\n> ", (toRes) => {
+      this.reader.question("Which stack do you want to move to?\n> ", (toRes) => {
         let toStack = parseInt(toRes);
         if(!this.move(fromStack, toStack)) {
           console.log("INVALID MOVE");
         }
         if(!this.isFinished()){
-          this.run(completionCallback);
+          this.run();
         } else {
           console.log(this);
-          completionCallback();
+          this.completionCallback();
         }
       });
     });
@@ -57,5 +54,4 @@ class Game {
   }
 }
 
-let g = new Game([[3,2,1],[],[]]);
-g.run(() => console.log("IT WORKS!"));
+module.exports = Game;
