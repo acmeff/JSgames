@@ -25,7 +25,6 @@ class Game {
         this.run();
       }
     });
-
   }
 }
 
