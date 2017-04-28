@@ -2,11 +2,31 @@ class Game {
   constructor(reader, completionCallback) {
     this.reader = reader;
     this.completionCallback = completionCallback;
+    this.currPlayer = 0;
+    this.board = new Board();
   }
 
+  run() {
+    this.promptMove();
+  }
 
+  promptMove() {
+    console.log(this.board.toString());
+    this.reader.question("Player " + this.currPlayer+ " Your Move.\n > ", (res) => {
+      let input = res.split(",");
+      input[0] = parseInt(input[0]);
+      input[1] = parseInt(input[1]);
+      this.board.fillSpace(input[0], input[1],
+        this.currPlayer === 0 ? "O" : "X");
+      if(this.board.isWon()) {
+        this.completionCallback();
+      } else {
+        this.currPlayer = (this.currPlayer + 1) % 2;
+        this.run();
+      }
+    });
 
-
+  }
 }
 
 
@@ -18,7 +38,7 @@ class Board {
     }
   }
 
-  won(){
+  isWon(){
     return this.diagsWon() || this.colsWon() || this.rowsWon();
   }
 
@@ -74,4 +94,4 @@ class Board {
   }
 }
 
-let b = new Board();
+module.exports = Game;
